@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>USA Library</title>
+<style type="text/css">
+   form{
+       margin: 20px 0;
+   }
+   form input, button{
+       padding: 5px;
+   }
+   table{
+       width: 100%;
+       margin-bottom: 20px;
+        border-collapse: collapse;
+   }
+   table, th, td{
+       border: 1px solid #cdcdcd ;
+   }
+   table th, table td{
+       padding: 10px;
+       text-align: left;
+   }
+</style>
+<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+</head>
+<body>
+   <h1>USA Library</h1>
+   <form>
+       <input type="text" id="title" name="title" placeholder="Enter Title">
+       <input type="text" id="author" name="author" placeholder="Enter Author">
+       <input type="button" class="add-row" value="Add Book">
+   </form>
+   <table>
+       <thead>
+           <tr>
+               <th>Select</th>
+               <th>Title</th>
+               <th>Author</th>
+           </tr>
+       </thead>
+       <tbody>
+       </tbody>
+   </table>
+   <button type="button" class="delete-row">Delete Book</button>
+</body>
+</html>
+
+<script>
+    var apiUrl="/api/books"
+
+    $(document).ready(function(){
+
+        //Populate list of books from DB
+        $.ajax({
+               url: apiUrl,
+               data: {
+                format: 'text'
+               },
+               dataType: 'text',
+               success: function(data) {
+                 console.log(data)
+                 //Convert string to javascript object
+                 var books=JSON.parse(data);
+                 books.forEach(function(book){
+                    var row = "<tr><td><input type='checkbox' name='record' id='" + book._id + "'></td><td>" + book.title + "</td><td>" + book.author + "</td></tr>";
+                    $("table tbody").append(row);
+                 })
+               },
+               error: function(err) {
+                  console.log('An error has occurred' + JSON.stringify(err));
+              },
+               type: 'GET'
+            });
+
+        //When button is clicked
+        $(".add-row").on('click',function(){
+           var title = $("#title").val();
+           var author = $("#author").val();
+
+           $.ajax({
+               url: '/api/books',
+               data: "title="+ title + "&author="+ author,
+               dataType: 'text',
+               success: function(data) {
+                 //Convert string to javascript object
+                 var book=JSON.parse(data);
+                 var row = "<tr><td><input type='checkbox' name='record' id='" + book._id + "'></td><td>" + book.title + "</td><td>" + book.author + "</td></tr>";
+                 $("table tbody").append(row);
+               },
+               error: function(err) {
+                  console.log('An error has occurred' + JSON.stringify(err));
+              },
+               type: 'POST'
+            });
+        })
+
+        //When delete is clicked
+        $(".delete-row").on('click',function(){
+          //Delete Plant Ajax Call
+           $("table tbody").find('input[name="record"]').each(function(){
+               if($(this).is(":checked")){
+                   var bookId=$(this).attr('id');
+                   var that=$(this);
+                   $.ajax({
+                       url: '/api/books/' + bookId,
+                       dataType: 'text',
+                       success: function(data) {
+                         that.parents("tr").remove();
+                       },
+                       error: function(err) {
+                          console.log('An error has occurred' + JSON.stringify(err));
+                      },
+                       type: 'DELETE'
+                    });
+               }
+           });
+       });
+
+    });
+</script>

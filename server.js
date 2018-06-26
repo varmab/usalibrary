@@ -9,6 +9,9 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 
 const port=8000;
+
+app.use(express.static("public"));
+
 app.get("/",(req,res)=>{
     res.send("Welcome to USA Library API Server")
 })
