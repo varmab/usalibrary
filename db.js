@@ -3,6 +3,9 @@ var mongoose=require('mongoose');
 //Connect
 mongoose.connect("mongodb://localhost:27017/usalibrary");
 
+//Make mongoose calls to support ES6 promises
+mongoose.Promise=global.Promise;
+
 //Schema & Model
 // var books=[{
 //     id:1,

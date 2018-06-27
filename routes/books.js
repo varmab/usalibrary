@@ -8,13 +8,21 @@ var db=require('../db');
 router.route("/")
     .post((req,res)=>{
         var newBook=new db.Book(req.body);
-        newBook.save((err,book)=>{
-            res.send(book)
+        newBook.save()
+        .then((book)=>{
+            res.status(200).send(book);
+        })
+        .catch((err)=>{
+            res.status(500).send(err);
         })
     })
     .get((req,res)=>{
-        db.Book.find({},(err,books)=>{
-            res.send(books);
+        db.Book.find({})
+        .then((books)=>{
+            res.status(200).send(books);
+        })
+        .catch((err)=>{
+            res.status(500).send(err);
         })
     })
 
@@ -28,11 +36,10 @@ router.get("/search/:term",(req,res)=>{
     })
 
 router.route("/:id")
-    .get((req,res)=>{
-        var id=req.params.id;
-        db.Book.find({_id:id},(err,books)=>{
-            res.send(books[0]);
-        })
+    .get(async (req,res)=>{
+                var id=req.params.id;
+                var books=await db.Book.find({_id:id});
+                res.send(books[0])
     })
     .put((req,res)=>{
         var id=req.params.id;
