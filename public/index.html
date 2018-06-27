@@ -32,12 +32,20 @@
        <input type="text" id="author" name="author" placeholder="Enter Author">
        <input type="button" class="add-row" value="Add Book">
    </form>
+   <br/>
+   <br/>
+   <h3>Books</h3>
+   <form>
+    <input type="text" id="search" name="search" placeholder="Enter search term">
+    <input type="button" class="search" value="Search">
+   </form>
    <table>
        <thead>
            <tr>
                <th>Select</th>
                <th>Title</th>
                <th>Author</th>
+               <th>Edit</th>
            </tr>
        </thead>
        <tbody>
@@ -64,7 +72,7 @@
                  //Convert string to javascript object
                  var books=JSON.parse(data);
                  books.forEach(function(book){
-                    var row = "<tr><td><input type='checkbox' name='record' id='" + book._id + "'></td><td>" + book.title + "</td><td>" + book.author + "</td></tr>";
+                    var row = "<tr><td><input type='checkbox' name='record' id='" + book._id + "'></td><td>" + book.title + "</td><td>" + book.author + "</td><td><button>Edit</button></td></tr>";
                     $("table tbody").append(row);
                  })
                },

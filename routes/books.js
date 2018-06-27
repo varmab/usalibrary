@@ -20,7 +20,9 @@ router.route("/")
 
 router.get("/search/:term",(req,res)=>{
         var term=req.params.term;
-        db.Book.find({title:'/^Java/i'},(err,books)=>{
+        const regex = new RegExp(term.toLowerCase().trim(), 'i')
+
+        db.Book.find({title: regex},(err,books)=>{
             res.send(books);
         })
     })
